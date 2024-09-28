@@ -53,3 +53,33 @@ async function sendTransaction(toAddress, amount) {
 
 // مثال ارسال تراکنش
 sendTransaction('EQD...your_recipient_address...', 1);
+
+// تابع برای ایجاد کیف پول جدید
+function createNewWallet() {
+    const mnemonic = bip39.generateMnemonic();
+    console.log('Mnemonic:', mnemonic);
+
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const hdWallet = hdkey.fromMasterSeed(seed);
+    const wallet = hdWallet.getWallet();
+    const privateKey = wallet.getPrivateKeyString();
+    const publicKey = wallet.getPublicKeyString();
+
+    console.log('Private Key:', privateKey);
+    console.log('Public Key:', publicKey);
+
+    const walletAddress = tonweb.wallet.create({publicKey: publicKey}).getAddress();
+    console.log('Wallet Address:', walletAddress.toString(true, true, true));
+
+    return {
+        mnemonic: mnemonic,
+        privateKey: privateKey,
+        publicKey: publicKey,
+        walletAddress: walletAddress.toString(true, true, true)
+    };
+}
+
+// مثال استفاده از تابع برای ایجاد کیف پول جدید برای کاربر جدید
+const newUserWallet = createNewWallet();
+console.log('New User Wallet:', newUserWallet);
+
